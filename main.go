@@ -4,17 +4,32 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 const TheOnlyLink = "https://user-images.githubusercontent.com/696437/49771691-7fcb4000-fd14-11e8-9a3c-358129b18a7d.png"
 
-func handler(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, TheOnlyLink, 301)
+var links = []string{
+	"",
+	"",
+	"https://user-images.githubusercontent.com/696437/49771691-7fcb4000-fd14-11e8-9a3c-358129b18a7d.png",
+	"https://user-images.githubusercontent.com/696437/100855679-a6ac4f00-34b4-11eb-9fd2-260c38047795.JPG",
+}
+
+func mainHandler(w http.ResponseWriter, r *http.Request) {
+	day, _ := strconv.Atoi(mux.Vars(r)["day"])
+	//TODO: handle err
+	if day > 0 && day < len(links) {
+		http.Redirect(w, r, links[day], 301)
+	}
 }
 
 func main() {
-	http.HandleFunc("/go/2", handler)
-	log.Fatal(http.ListenAndServe(getPort(), nil))
+	r := mux.NewRouter()
+	r.HandleFunc("/go/{day}", mainHandler)
+	http.ListenAndServe(getPort(), r)
 }
 
 func getPort() string {
