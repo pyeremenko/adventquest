@@ -16,6 +16,9 @@ var links = []string{
 	"",
 	"https://user-images.githubusercontent.com/696437/49771691-7fcb4000-fd14-11e8-9a3c-358129b18a7d.png",
 	"https://user-images.githubusercontent.com/696437/100855679-a6ac4f00-34b4-11eb-9fd2-260c38047795.JPG",
+	"https://user-images.githubusercontent.com/696437/100976900-63acb300-356a-11eb-8920-2d7f15b7882b.JPG",
+	"https://user-images.githubusercontent.com/696437/100976969-7fb05480-356a-11eb-93d4-21a9da6b9318.JPG",
+	"https://user-images.githubusercontent.com/696437/100977011-8d65da00-356a-11eb-8c22-45c4130c4b17.JPG",
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
