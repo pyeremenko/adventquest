@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-)
 
-const TheOnlyLink = "https://user-images.githubusercontent.com/696437/49771691-7fcb4000-fd14-11e8-9a3c-358129b18a7d.png"
+	"adventquest/response"
+)
 
 var links = []string{
 	"",
@@ -22,11 +22,18 @@ var links = []string{
 }
 
 func mainHandler(w http.ResponseWriter, r *http.Request) {
-	day, _ := strconv.Atoi(mux.Vars(r)["day"])
-	//TODO: handle err
-	if day > 0 && day < len(links) {
-		http.Redirect(w, r, links[day], 301)
+	day, err := strconv.Atoi(mux.Vars(r)["day"])
+	if err != nil {
+		response.BadRequest(w, response.Err("the day is invalid", "invalid_day"))
+		return
 	}
+
+	if day <= 0 || day >= len(links) {
+		response.NotFound(w, response.Err("the day not found", "day_not_found"))
+		return
+	}
+
+	http.Redirect(w, r, links[day], 301)
 }
 
 func main() {

@@ -1,4 +1,4 @@
-module pyeremenko/adventquest
+module adventquest
 
 go 1.13
 
