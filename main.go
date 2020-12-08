@@ -89,7 +89,9 @@ func getConnectionString() string {
 func connect() error {
 	var err error
 
-	pg, err = sql.Open("postgres", getConnectionString())
+	connectionString := getConnectionString()
+	log.Printf("Connecting to postgres: %v\n", connectionString)
+	pg, err = sql.Open("postgres", connectionString)
 	return err
 }
 
