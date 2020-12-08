@@ -39,11 +39,6 @@ func mainHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if day <= 0 || day >= len(links) {
-		response.NotFound(w, response.Err("the day not found", "day_not_found"))
-		return
-	}
-
 	task, err := getTask(day)
 	if err != nil {
 		response.InternalError(w, response.Err("can't fetch the day", "day_fetching_error"))
