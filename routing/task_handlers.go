@@ -24,7 +24,7 @@ func (app *Application) GoToTaskHandler(w http.ResponseWriter, r *http.Request) 
 	task, err := app.getTask(day)
 	if err != nil {
 		log.Error("failed to fetch the task")
-		response.InternalError(w, response.Err("can't fetch the day's task", "day_fetching_error"))
+		response.InternalError(w, response.Err("can't fetch the day's task", "fetching_error"))
 		return
 	}
 	if task == nil {
@@ -36,10 +36,20 @@ func (app *Application) GoToTaskHandler(w http.ResponseWriter, r *http.Request) 
 }
 
 func (app *Application) CreateTaskHandler(w http.ResponseWriter, r *http.Request) {
+	payload := r.Context().Value("input").(*model.CreateTaskInput)
+	log := r.Context().Value("log").(*l.Entry)
 
+	insertStatement := "INSERT INTO tasks(day, link) VALUES ($1, $2)"
+	_, err := app.Pg.Exec(insertStatement, payload.Day, payload.Link)
+	if err != nil {
+		log.WithError(err).Error("failed to create a task")
+		response.InternalError(w, response.Err("can't create a task", "creation_error"))
+		return
+	}
+
+	response.Ok(w, response.Payload{"message": "Created"})
 }
 
-// TODO: pass PG here
 func (app *Application) getTask(day int) (*model.Task, error) {
 	rows, err := app.Pg.Query("SELECT day, link FROM tasks WHERE day = $1", day)
 	if err != nil {

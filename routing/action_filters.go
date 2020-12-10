@@ -64,7 +64,7 @@ func (app *Application) AuthAdminMiddleware(next http.Handler, route Route) http
 			return
 		}
 
-		if token != "sup3rT0k3n" {
+		if token != app.SuperToken {
 			response.Unauthorized(w, response.Err("not enough privileges", "not_admin"))
 			return
 		}
@@ -84,14 +84,14 @@ func (app *Application) NullableInputMiddleware(factory model.InputModelFactory)
 
 			body, err := ioutil.ReadAll(req.Body)
 			if err != nil {
-				log.WithError(err).Error("failed to get input")
+				log.WithError(err).Info("failed to get input")
 				response.BadRequest(w, response.Err(err.Error(), "failed_to_get_input"))
 				return
 			}
 			if len(body) > 0 {
 				err = json.Unmarshal(body, input)
 				if err != nil {
-					log.WithError(err).Error("failed to parse input")
+					log.WithError(err).Info("failed to parse input")
 					response.BadRequest(w, response.Err(err.Error(), "failed_to_parse_input"))
 					return
 				}
@@ -113,7 +113,7 @@ func (app *Application) InputMiddleware(factory model.InputModelFactory) ActionF
 			input := factory.Create()
 			err := json.NewDecoder(req.Body).Decode(input)
 			if err != nil {
-				log.WithError(err).Error("failed to parse input")
+				log.WithError(err).Info("failed to parse input")
 				response.BadRequest(w, response.Err(err.Error(), "failed_to_parse_input"))
 				return
 			}

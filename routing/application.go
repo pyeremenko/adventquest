@@ -14,7 +14,8 @@ var (
 )
 
 type Application struct {
-	Pg *sql.DB
+	Pg         *sql.DB
+	SuperToken string
 }
 
 func (app *Application) Run() *mux.Router {

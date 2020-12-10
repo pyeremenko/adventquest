@@ -12,5 +12,5 @@ type CreateTaskInput struct {
 type CreateTaskInputFactory struct{}
 
 func (f *CreateTaskInputFactory) Create() interface{} {
-	return &CreateTaskInputFactory{}
+	return &CreateTaskInput{}
 }

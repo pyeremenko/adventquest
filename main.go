@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"os"
 
 	_ "github.com/lib/pq"
+	log "github.com/sirupsen/logrus"
 
 	"adventquest/routing"
 )
@@ -17,7 +17,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app := &routing.Application{Pg: pg}
+	app := &routing.Application{Pg: pg, SuperToken: getAdminToken()}
 
 	http.ListenAndServe(getPort(), app.Run())
 }
@@ -26,7 +26,7 @@ func getPort() string {
 	var port = os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
-		log.Println("INFO: No PORT environment variable detected, defaulting to " + port)
+		log.Info("no PORT environment variable detected, defaulting to " + port)
 	}
 	return ":" + port
 }
@@ -40,8 +40,17 @@ func getConnectionString() string {
 	return os.Getenv(connStringVariableName)
 }
 
+func getAdminToken() string {
+	var token = os.Getenv("SUPERTOKEN")
+	if token == "" {
+		token = "supertoken"
+		log.Info("no SUPERTOKEN environment variable detected, defaulting to " + token)
+	}
+	return token
+}
+
 func connect() (*sql.DB, error) {
 	connectionString := getConnectionString()
-	log.Printf("Connecting to postgres: %v\n", connectionString)
+	log.Infof("Connecting to postgres: %v\n", connectionString)
 	return sql.Open("postgres", connectionString)
 }
